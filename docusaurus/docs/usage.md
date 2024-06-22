@@ -214,24 +214,24 @@ You can safely use the following types in the Parameter object: string, int, flo
 The array type is supported but still experimental.
 
 ## Embeddings
-LLPhant support OpenAI and Mistral.
+LLPhant support OpenAI, Ollama and Mistral.
 
 > 💡 Embeddings are used to compare two texts and see how similar they are. This is the base of semantic search.
 An embedding is a vector representation of a text that captures the meaning of the text.
 It is a float array of 1536 elements for OpenAI.
 
 To manipulate embeddings we use the `Document` class that contains the text and some metadata useful for the vector store.
-The creation of an embedding follow the following flow:
+This is the process for creating an embedding:
 <div align="center">
     <img src="/assets/embeddings-flow.png" alt="Embeddings flow" style={{paddingBottom:20}} />
 </div>
 
 ## Read data
 The first part of the flow is to read data from a source.
-This can be a database, a csv file, a json file, a text file, a website, a pdf, a word document, an excel file, ...
+This can be a database, a csv file, a json file, a text file, a website, a pdf, a Word document, an Excel file or a file of different type.
 The only requirement is that you can read the data and that you can extract the text from it.
 
-For now we only support text files, pdf and docx but we plan to support other data type in the future.
+We support text files, pdf and docx at the moment, but we plan to handle other data types in the future.
 
 You can use the `FileDataReader` class to read a file. It takes a path to a file or a directory as parameter.
 The second parameter is the class name of the entity that will be used to store the embedding. 
@@ -282,7 +282,7 @@ $embedding = $llm->embedText('I love food');
 ## VectorStores
 Once you have embeddings you need to store them in a vector store.
 The vector store is a database that can store vectors and perform a similarity search.
-There are currently 4 vectorStore class:
+There are currently these vectorStore classes:
 - MemoryVectorStore stores the embeddings in the memory
 - FileSystemVectorStore stores the embeddings in a file
 - DoctrineVectorStore stores the embeddings in a postgresql database. (require doctrine/orm) 
