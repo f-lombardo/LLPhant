@@ -73,7 +73,7 @@ final class FileDataReader implements DataReader
 
     private function getContentFromFile(string $path): string|false
     {
-        $fileExtension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+        $fileExtension = \strtolower(pathinfo($path, PATHINFO_EXTENSION));
 
         if (! $this->validExtension($fileExtension)) {
             return false;
@@ -92,7 +92,13 @@ final class FileDataReader implements DataReader
             return $docxReader->getText($path);
         }
 
-        return file_get_contents($path);
+        if ($fileExtension === 'html' || $fileExtension === 'htm') {
+            $htmlReader = new HtmlReader();
+
+            return $htmlReader->getText($path);
+        }
+
+        return \file_get_contents($path);
     }
 
     private function getDocument(string $content, string $entry): mixed

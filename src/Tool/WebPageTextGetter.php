@@ -3,17 +3,21 @@
 namespace LLPhant\Tool;
 
 use Exception;
+use LLPhant\Embeddings\DataReader\HtmlReader;
 use LLPhant\Experimental\Agent\Render\CLIOutputUtils;
 use LLPhant\Experimental\Agent\Render\OutputAgentInterface;
 
 class WebPageTextGetter extends ToolBase
 {
+    private readonly HtmlReader $htmlReader;
+
     /**
      * @throws Exception
      */
     public function __construct(bool $verbose = false, public OutputAgentInterface $outputAgent = new CLIOutputUtils())
     {
         parent::__construct($verbose);
+        $this->htmlReader = new HtmlReader();
     }
 
     /**
@@ -46,22 +50,9 @@ class WebPageTextGetter extends ToolBase
         $this->outputAgent->renderTitleAndMessageOrange('🔧 retrieving web page content', $url, true);
 
         try {
-            $html = file_get_contents($url);
-            if ($html === false) {
-                throw new \Exception('Unable to retrieve web page content');
-            }
-            $text = (string) preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $html);
-            $text = (string) preg_replace('/<style\b[^>]*>(.*?)<\/style>/is', '', $text);
-            $text = strip_tags($text);
-            $text = html_entity_decode($text);
-            $text = str_replace("\n", '.', $text);
-            $text = str_replace("\t", '.', $text);
-            $text = str_replace("\r", '.', $text);
-            $text = (string) preg_replace('/( )+/', ' ', $text);
-
-            return (string) preg_replace('/((\.)|( \.))+/', '.', $text);
+            return $this->htmlReader->getText($url);
         } catch (Exception) {
-            return 'We couldn\'t retrieve the web page content from the url provided '.$url;
+            return 'We couldn\'t retrieve the web page content from '.$url;
         }
     }
 }
