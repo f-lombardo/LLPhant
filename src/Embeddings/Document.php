@@ -37,7 +37,16 @@ class Document
     /**
      * Convert the document to a structured array, including metadata.
      *
-     * @return array<string, mixed>
+     * @return array{
+     *     content: string,
+     *     formattedContent: string|null,
+     *     embedding: float[]|null,
+     *     sourceType: string,
+     *     sourceName: string,
+     *     hash: string,
+     *     chunkNumber: int,
+     *     metadata: array<string, mixed>
+     * }
      */
     public function toArray(): array
     {
@@ -52,4 +61,5 @@ class Document
             'metadata' => $this->metadata,
         ];
     }
+
 }
