@@ -15,6 +15,8 @@ use LLPhant\Embeddings\VectorStores\VectorStoreBase;
 
 final class DoctrineVectorStore extends VectorStoreBase implements DocumentStore
 {
+    private SupportedDoctrineVectorStore $doctrineVectorStoreType;
+
     /**
      * @template T of DoctrineEmbeddingEntityBase
      *
@@ -31,6 +33,7 @@ final class DoctrineVectorStore extends VectorStoreBase implements DocumentStore
         }
 
         $conn = $entityManager->getConnection();
+        $this->doctrineVectorStoreType = SupportedDoctrineVectorStore::fromPlatform($conn->getDatabasePlatform());
         $registeredTypes = Type::getTypesMap();
         if (! array_key_exists(VectorType::VECTOR, $registeredTypes)) {
             Type::addType(VectorType::VECTOR, VectorType::class);
@@ -78,7 +81,7 @@ final class DoctrineVectorStore extends VectorStoreBase implements DocumentStore
         $qb = $repository
             ->createQueryBuilder('e')
             ->orderBy('L2_DISTANCE(e.embedding, :embeddingString)', 'ASC')
-            ->setParameter('embeddingString', VectorUtils::getVectorAsString($embedding))
+            ->setParameter('embeddingString', VectorUtils::getVectorAsString($embedding, $this->doctrineVectorStoreType))
             ->setMaxResults($k);
 
         foreach ($additionalArguments as $key => $value) {

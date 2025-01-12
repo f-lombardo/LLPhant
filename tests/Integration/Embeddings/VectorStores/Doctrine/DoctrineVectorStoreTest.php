@@ -13,19 +13,11 @@ use LLPhant\Embeddings\EmbeddingFormatter\EmbeddingFormatter;
 use LLPhant\Embeddings\EmbeddingGenerator\OpenAI\OpenAI3LargeEmbeddingGenerator;
 use LLPhant\Embeddings\VectorStores\Doctrine\DoctrineVectorStore;
 
-it('creates two entity with their embeddings and perform a similarity search', function () {
+it('creates two entities with their embeddings and performs a similarity search', function (array $connectionParams) {
     $config = ORMSetup::createAttributeMetadataConfiguration(
         [__DIR__.'/src'],
         true
     );
-
-    $connectionParams = [
-        'dbname' => 'postgres',
-        'user' => 'myuser',
-        'password' => '!ChangeMe!',
-        'host' => getenv('PGVECTOR_HOST') ?: 'localhost',
-        'driver' => 'pdo_pgsql',
-    ];
 
     $connection = DriverManager::getConnection($connectionParams);
     $connection->executeQuery('TRUNCATE TABLE test_place');
@@ -51,7 +43,22 @@ it('creates two entity with their embeddings and perform a similarity search', f
 
     // We check that the search return the correct entities in the right order
     expect($result[0]->content)->toBe('I live in Paris');
-});
+})->with([
+//    [[
+//        'dbname' => 'postgres',
+//        'user' => 'myuser',
+//        'password' => '!ChangeMe!',
+//        'host' => getenv('PGVECTOR_HOST') ?: 'localhost',
+//        'driver' => 'pdo_pgsql',
+//    ]],
+    [[
+        'dbname' => 'llphant',
+        'user' => 'root',
+        'password' => 'example',
+        'host' => getenv('MARIADB_HOST') ?: 'localhost',
+        'driver' => 'pdo_mysql',
+    ]],
+]);
 
 it('tests a full embedding flow with Doctrine', function () {
     $config = ORMSetup::createAttributeMetadataConfiguration(
