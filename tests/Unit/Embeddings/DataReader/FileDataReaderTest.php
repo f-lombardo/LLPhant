@@ -124,4 +124,3 @@ it('includes metadata in the document structure', function () {
         ->and($documentArray['metadata']['title'])->toEqual('Test Title')
         ->and($documentArray['metadata']['category'])->toEqual('Test Category');
 });
-

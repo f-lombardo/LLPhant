@@ -61,5 +61,4 @@ class Document
             'metadata' => $this->metadata,
         ];
     }
-
 }

@@ -81,7 +81,7 @@ final class FileDataReader implements DataReader
         return file_get_contents($path);
     }
 
-    protected function getDocument(string $content, string $entry): Document
+    private function getDocument(string $content, string $entry): Document
     {
         $document = new $this->documentClassName();
         $document->content = $content;
