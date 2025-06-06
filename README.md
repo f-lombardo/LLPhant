@@ -889,7 +889,7 @@ To automatically remember the chat session you can pass a `ChatSession` object t
 Evaluating output of LLM is a challenging task due to lack of structure in text and multiple possible correct answers.  
 LLPhant framework delivers also tools for evaluating LLMs and AI agent responses with different strategies.
 
-Strategies included for evaluating LLM responses:
+Strategies for evaluating LLM responses include:
 - Criteria evaluator
 - String comparison
 - Trajectory evaluator
@@ -903,11 +903,11 @@ Input can be text, list of Message objects or ChatSession object.
 
     /** @var Message[] $messages */
     /** @var string[] $references */
-    $evaluator->evaluateMessages(array $messages, array $references);
+    $evaluator->evaluateMessages($messages, $references);
 
     /** @var ChatSession $chatSession */
     /** @var string[] $references */
-    $evaluator->evaluateChatSession(ChatSession $chatSession, array $references);
+    $evaluator->evaluateChatSession($chatSession, $references);
 ```
 
 Find usage examples below and for more details see:
