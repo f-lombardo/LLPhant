@@ -12,6 +12,6 @@ abstract class AbstractEvaluator implements EvaluatorInterface
 
     public function evaluateChatSession(ChatSession $chatSession, array $references = [], int $n = 1): EvaluationResults
     {
-        return $this->evaluateMessages($chatSession->getHistory());
+        return $this->evaluateMessages($chatSession->getHistory(), $references, $n);
     }
 }
