@@ -83,7 +83,7 @@ $evaluationPrompt = (new CriteriaEvaluatorPromptBuilder())
     ->addMaliciousness()
     ->addMisogyny()
     ->addCorrectness()
-    ->getEvaluationPrompt($question, $response);
+    ->getEvaluationPromptForQuestion($question, $response);
 
 
 $configGPT = new OpenAIConfig();
