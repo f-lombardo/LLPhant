@@ -24,10 +24,8 @@ TEXT;
         ->addHelpfulness()
         ->addRelevance();
 
-    $config = new OpenAIConfig();
-    $config->apiKey = 'someKey';
     $evaluator = new CriteriaEvaluator();
-    $evaluator->setChat(new OpenAIChat($config));
+    $evaluator->setChat(getChatMock());
     $evaluator->setCriteriaPromptBuilder($evaluationPromptBuilder);
     $evaluator->evaluateText('some text', '');
 })->throws(\LogicException::class);
