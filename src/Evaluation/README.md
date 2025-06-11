@@ -234,6 +234,7 @@ Results:
 
 ## 📚 Resources
 📖 For a detailed explanation of concepts used in this application, check out articles linked below:\
+https://medium.com/towards-artificial-intelligence/evaluating-large-language-model-outputs-with-string-comparison-criteria-trajectory-approaches-c42d43c0cdc3
 https://en.wikipedia.org/wiki/ROUGE_(metric) \
 https://en.wikipedia.org/wiki/BLEU \
-https://en.wikipedia.org/wiki/METEOR 
+https://en.wikipedia.org/wiki/METEOR \
