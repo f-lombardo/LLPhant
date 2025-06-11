@@ -6,6 +6,7 @@ use LLPhant\Chat\Message;
 use LLPhant\Chat\OpenAIChat;
 use LLPhant\Evaluation\Criteria\CriteriaEvaluator;
 use LLPhant\Evaluation\Criteria\CriteriaEvaluatorPromptBuilder;
+use LLPhant\OpenAIConfig;
 
 it('throws LogicException when wrong param is passed', function (): void {
     $question = 'Does “Ruby on Rails”, the web framework, have anything to do with Ruby Rails, the country singer?';
@@ -23,8 +24,10 @@ TEXT;
         ->addHelpfulness()
         ->addRelevance();
 
+    $config = new OpenAIConfig();
+    $config->apiKey = 'someKey';
     $evaluator = new CriteriaEvaluator();
-    $evaluator->setChat(new OpenAIChat());
+    $evaluator->setChat(new OpenAIChat($config));
     $evaluator->setCriteriaPromptBuilder($evaluationPromptBuilder);
     $evaluator->evaluateText('some text', '');
 })->throws(\LogicException::class);
@@ -109,6 +112,13 @@ function getChatMock(): OpenAIChat
 {
     return new class extends OpenAIChat
     {
+        public function __construct()
+        {
+            $config = new OpenAIConfig();
+            $config->apiKey = 'someKey';
+            parent::__construct($config);
+        }
+
         public function generateText(string $prompt): string
         {
             return '{
