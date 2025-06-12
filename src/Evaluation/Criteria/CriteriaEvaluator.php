@@ -66,8 +66,8 @@ final class CriteriaEvaluator extends AbstractEvaluator
         if ($n !== 1) {
             throw new \LogicException("Criteria evaluator doesn't support N-grams. Keep default param value.");
         }
-        if ($references === []) {
-            throw new \LogicException('Pass user messages as reference');
+        if ($references !== []) {
+            throw new \LogicException('Pass answers as assistant messages.');
         }
 
         $assistantMessages = array_filter(array_map(

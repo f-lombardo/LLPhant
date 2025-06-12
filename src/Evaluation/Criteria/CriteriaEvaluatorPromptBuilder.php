@@ -170,7 +170,8 @@ final class CriteriaEvaluatorPromptBuilder
             .implode(",\n", $exampleJSON)
             ."\n}
 
-        Don't include any additional explanation, just JSON with Criteria scores.";
+        Don't include any additional explanation, just valid JSON with Criteria scores.
+        Score the answer from 1-5 for each criterion and return valid JSON only without any additional text or word. For example";
     }
 
     /**

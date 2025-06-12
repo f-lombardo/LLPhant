@@ -87,7 +87,7 @@ TEXT;
     $evaluator = new CriteriaEvaluator();
     $evaluator->setChat(getChatMock());
     $evaluator->setCriteriaPromptBuilder($evaluationPromptBuilder);
-    $results = $evaluator->evaluateMessages([Message::user('some text')], ['some question']);
+    $results = $evaluator->evaluateMessages([Message::user('some text'), Message::assistant('some question')]);
     expect($results->getResults())->toBe([
         'correctness' => 5,
         'helpfulness' => 4,

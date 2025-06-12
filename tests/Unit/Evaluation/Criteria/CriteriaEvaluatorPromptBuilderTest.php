@@ -46,5 +46,6 @@ helpfulness: 3,
 relevance: 3
 }
 
-        Don't include any additional explanation, just JSON with Criteria scores.");
+        Don't include any additional explanation, just valid JSON with Criteria scores.
+        Score the answer from 1-5 for each criterion and return valid JSON only without any additional text or word. For example");
 });
