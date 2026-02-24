@@ -11,9 +11,9 @@ build:
 
     commands:
         # Install Docusaurus dependencies
-        - cd docusaurus/ && npm install
+        - cd docusaurus/ && yarn install
         # Build the site
-        - cd docusaurus/ && npm run build
+        - cd docusaurus/ && yarn build
         # Copy generated files into Read the Docs directory
         - mkdir --parents $READTHEDOCS_OUTPUT/html/
         - cp --recursive docusaurus/build/* $READTHEDOCS_OUTPUT/html/
