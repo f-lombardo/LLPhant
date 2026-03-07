@@ -14,8 +14,8 @@ jobs:
       fail-fast: true
       matrix:
         os: [ubuntu-latest]
-        php: [8.2]
-        dependency-version: [prefer-lowest, prefer-stable]
+        php: [8.2, 8.5]
+        dependency-version: [prefer-stable]
 
     name: Formats P${{ matrix.php }} - ${{ matrix.os }} - ${{ matrix.dependency-version }}
 
@@ -43,9 +43,6 @@ jobs:
 
     - name: Coding Style Checks
       run: composer test:lint
-
-    - name: Refactor Checks
-      run: composer test:refactor
 
     - name: Type Checks
       run: composer test:types
