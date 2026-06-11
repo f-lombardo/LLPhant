@@ -40,13 +40,13 @@ class AnthropicMessage extends Message implements \JsonSerializable
         $message = new self();
         $message->role = ChatRole::Assistant;
 
+        // A tool_use block for a parameterless tool decodes its `input: {}` as an empty
+        // PHP array, which would re-serialise as `[]` and be rejected by Anthropic
+        // (400 "tool_use.input: Input should be an object"). Coerce it back to an object.
         foreach ($responses as &$response) {
-            if (($response['type'] ?? null) !== 'tool_use') {
-                continue;
+            if (($response['type'] ?? null) === 'tool_use' && ($response['input'] ?? null) === []) {
+                $response['input'] = new stdClass();
             }
-
-            $input = $response['input'] ?? [];
-            $response['input'] = (object) $input;
         }
         unset($response);
 
