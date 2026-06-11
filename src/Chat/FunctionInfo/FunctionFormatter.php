@@ -53,7 +53,7 @@ class FunctionFormatter
             'description' => $functionInfo->description,
             'parameters' => [
                 'type' => 'object',
-                'properties' => $parametersOpenAI,
+                'properties' => $parametersOpenAI === [] ? new stdClass() : $parametersOpenAI,
                 'required' => $requiredParametersOpenAI,
             ],
         ];
@@ -158,7 +158,7 @@ class FunctionFormatter
     /**
      * @param  Parameter[]  $parameters
      * @param  Parameter[]  $requiredParameters
-     * @return array{type: string, properties: array<string, array{type: string, description: string, enum?: mixed[]}>|stdClass, required?: string[]}
+     * @return array{type: string, properties: array<string, array{type: string, description: string}>}
      */
     private static function toInputSchema(array $parameters, array $requiredParameters): array
     {
@@ -179,9 +179,10 @@ class FunctionFormatter
             $requiredParametersNames[] = $requiredParameter->name;
         }
 
-        $schema = [
+        return [
             'type' => 'object',
-            'properties' => count($result) === 0 ? new stdClass() : $result,
+            'properties' => $result === [] ? new stdClass() : $result,
+            'required' => $requiredParametersNames,
         ];
 
         if ($requiredParametersNames !== []) {
