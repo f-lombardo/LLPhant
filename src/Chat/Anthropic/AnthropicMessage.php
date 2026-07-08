@@ -24,7 +24,7 @@ class AnthropicMessage extends Message implements \JsonSerializable
             $message->contentsArray[] = [
                 'type' => 'tool_result',
                 'tool_use_id' => $key,
-                'content' => $value,
+                'content' => self::normalizeToolResultContent($value),
             ];
         }
 
@@ -38,6 +38,16 @@ class AnthropicMessage extends Message implements \JsonSerializable
     {
         $message = new self();
         $message->role = ChatRole::Assistant;
+
+        foreach ($responses as &$response) {
+            if (($response['type'] ?? null) !== 'tool_use') {
+                continue;
+            }
+
+            $input = $response['input'] ?? [];
+            $response['input'] = (object) $input;
+        }
+        unset($response);
 
         $message->contentsArray = $responses;
 
@@ -53,5 +63,14 @@ class AnthropicMessage extends Message implements \JsonSerializable
             'role' => $this->role->value,
             'content' => $this->contentsArray,
         ];
+    }
+
+    private static function normalizeToolResultContent(mixed $value): string
+    {
+        if (is_string($value)) {
+            return $value;
+        }
+
+        return json_encode($value, JSON_THROW_ON_ERROR);
     }
 }

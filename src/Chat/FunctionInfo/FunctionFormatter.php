@@ -2,6 +2,10 @@
 
 namespace LLPhant\Chat\FunctionInfo;
 
+use stdClass;
+
+use function count;
+
 class FunctionFormatter
 {
     /**
@@ -154,7 +158,7 @@ class FunctionFormatter
     /**
      * @param  Parameter[]  $parameters
      * @param  Parameter[]  $requiredParameters
-     * @return array{type: string, properties: array<string, array{type: string, description: string}>}
+     * @return array{type: string, properties: array<string, array{type: string, description: string, enum?: mixed[]}>|stdClass, required?: string[]}
      */
     private static function toInputSchema(array $parameters, array $requiredParameters): array
     {
@@ -175,10 +179,15 @@ class FunctionFormatter
             $requiredParametersNames[] = $requiredParameter->name;
         }
 
-        return [
+        $schema = [
             'type' => 'object',
-            'properties' => $result,
-            'required' => $requiredParametersNames,
+            'properties' => count($result) === 0 ? new stdClass() : $result,
         ];
+
+        if ($requiredParametersNames !== []) {
+            $schema['required'] = $requiredParametersNames;
+        }
+
+        return $schema;
     }
 }

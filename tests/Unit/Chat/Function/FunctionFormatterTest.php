@@ -218,3 +218,37 @@ it('can format function info for Anthropic', function () {
 
     expect(json_encode($formattedFunction[0], JSON_PRETTY_PRINT))->toBe($expected);
 });
+
+it('can format function info with no parameters for Anthropic', function () {
+    $function = new FunctionInfo(
+        'getItemList',
+        new MailerExample(),
+        'Get a list of items from my warehouse',
+        [],
+        []
+    );
+
+    $formattedFunction = FunctionFormatter::formatFunctionsToAnthropic([$function]);
+
+    $expected = <<<'JSON'
+    {
+        "name": "getItemList",
+        "description": "Get a list of items from my warehouse",
+        "input_schema": {
+            "type": "object",
+            "properties": {}
+        }
+    }
+    JSON;
+
+    expect(json_encode($formattedFunction[0], JSON_PRETTY_PRINT))->toBe($expected);
+});
+
+it('serializes empty tool properties as an object not an array', function () {
+    $function = new FunctionInfo('no_args_tool', new \stdClass(), 'A tool with no parameters', [], []);
+
+    $anthropic = FunctionFormatter::formatFunctionsToAnthropic([$function]);
+
+    expect($anthropic[0]['input_schema']['properties'])->toEqual(new \stdClass());
+    expect(json_encode($anthropic[0]))->toContain('"properties":{}');
+});
