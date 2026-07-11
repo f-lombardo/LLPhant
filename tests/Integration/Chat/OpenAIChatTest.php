@@ -197,3 +197,31 @@ it('reports errors correctly', function () {
     $chat = new OpenAIChat($config);
     $chat->generateText('Hello!');
 })->throws(HttpException::class, '401');
+
+it('can call a function with no arguments', function () {
+    $config = new OpenAIConfig();
+    //Tools are needed with newer models
+    $config->model = OpenAIChatModel::Gpt35Turbo->value;
+    $chat = new OpenAIChat($config);
+
+    $itemListObject = new class
+    {
+        public function getItemList(): array
+        {
+            return ['Barolo riserva 2015', 'Brunello di Montalcino 2020'];
+        }
+    };
+
+    $function = new FunctionInfo(
+        'getItemList',
+        $itemListObject,
+        'Get a list of items from my warehouse',
+        []
+    );
+
+    $chat->addFunction($function);
+    $chat->setSystemMessage('You are an AI that can get a list of items from my warehouse using an external system.');
+    $answer = $chat->generateText('What is the oldest wine I have in my warehouse?');
+
+    expect($answer)->toContain('Barolo riserva 2015');
+});

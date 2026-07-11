@@ -173,8 +173,9 @@ it('serializes empty tool properties as an object not an array', function () {
     $openai = FunctionFormatter::formatFunctionsToOpenAI([$function]);
 
     expect($anthropic[0]['input_schema']['properties'])->toEqual(new stdClass());
-    expect($openai[0]['parameters']['properties'])->toEqual(new stdClass());
     expect(json_encode($anthropic[0]))->toContain('"properties":{}');
+
+    expect($openai[0]['parameters']['properties'])->toEqual(new stdClass());
 });
 
 it('can format function info for Anthropic', function () {
