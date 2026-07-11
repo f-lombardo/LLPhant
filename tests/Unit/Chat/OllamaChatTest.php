@@ -441,3 +441,78 @@ it('stops at tool call in generateTextOrReturnFunctionToCall', function () {
     // It should NOT have executed the function
     expect($weatherExample->lastMessage)->toBe('');
 });
+
+it('recovers a malformed tool call from message content', function () {
+    $ollamaMalformedToolCall = <<<'JSON'
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\"name\":\"sendMail\",\"parameters{\"}body\": \"Marie Curie was a Polish-born physicist and chemist.\",\"email\": \"student@foo.com\", \"subject\": \"Marie Curie Information\"}}",
+        "tool_calls": [
+          {
+            "function": {
+              "name": "sendMail",
+              "arguments": {
+                "body": "Marie Curie was a Polish-born physicist and chemist.",
+                "email": "student@foo.com",
+                "subject": "Marie Curie Information"
+              }
+            }
+          }
+        ]
+      },
+      "done": true
+    }
+    JSON;
+
+    $ollamaFinalAnswer = <<<'JSON'
+    {
+      "message": {
+        "role": "assistant",
+        "content": "Done"
+      },
+      "done": true
+    }
+    JSON;
+
+    $mock = new MockHandler([
+        new Response(200, [], $ollamaMalformedToolCall),
+        new Response(200, [], $ollamaFinalAnswer),
+    ]);
+    $handlerStack = HandlerStack::create($mock);
+    $client = new Client(['handler' => $handlerStack]);
+
+    $config = new OllamaConfig();
+    $config->model = 'test';
+    $chat = new OllamaChat($config);
+    $chat->client = $client;
+
+    $mailer = new class
+    {
+        public string $lastMessage = '';
+
+        public function sendMail(string $subject, string $body, string $email): string
+        {
+            $this->lastMessage = 'The email has been sent to '.$email.' with the subject '.$subject.' and the body '.$body.'.';
+
+            return $this->lastMessage;
+        }
+    };
+
+    $chat->addFunction(new FunctionInfo(
+        'sendMail',
+        $mailer,
+        'send a mail',
+        [
+            new Parameter('subject', 'string', 'the subject of the mail'),
+            new Parameter('body', 'string', 'the body of the mail'),
+            new Parameter('email', 'string', 'the email address'),
+        ]
+    ));
+
+    $answer = $chat->generateChat([Message::user('Who is Marie Curie in one line? My email is student@foo.com')]);
+
+    expect($answer)->toBe('Done')
+        ->and($mailer->lastMessage)->toStartWith('The email has been sent to student@foo.com with the subject Marie Curie Information')
+        ->and($chat->lastFunctionCalled()?->definition->name)->toBe('sendMail');
+});
