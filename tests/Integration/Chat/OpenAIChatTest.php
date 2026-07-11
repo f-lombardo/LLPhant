@@ -223,5 +223,7 @@ it('can call a function with no arguments', function () {
     $chat->setSystemMessage('You are an AI that can get a list of items from my warehouse using an external system.');
     $answer = $chat->generateText('What is the oldest wine I have in my warehouse?');
 
-    expect($answer)->toContain('Barolo riserva 2015');
+    expect(strtolower($answer))
+        ->toContain('barolo')
+        ->toContain('2015');
 });

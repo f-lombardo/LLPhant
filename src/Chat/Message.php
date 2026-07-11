@@ -69,27 +69,45 @@ class Message implements \JsonSerializable, \Stringable
         return $message;
     }
 
-    public static function functionResult(?string $content, string $name): self
+    public static function functionResult(mixed $content, string $name): self
     {
         $message = new self();
         $message->role = ChatRole::Function;
-        $message->content = $content ?? '';
+        $message->content = self::normalizeContent($content);
         $message->name = $name;
 
         return $message;
     }
 
-    public static function toolResult(?string $content, ?string $toolCallId = null): self
+    public static function toolResult(mixed $content, ?string $toolCallId = null): self
     {
         $message = new self();
         $message->role = ChatRole::Tool;
-        $message->content = $content ?? '';
+        $message->content = self::normalizeContent($content);
 
         if ($toolCallId !== null) {
             $message->tool_call_id = $toolCallId;
         }
 
         return $message;
+    }
+
+    public static function normalizeContent(mixed $content): string
+    {
+        if ($content === null) {
+            return '';
+        }
+
+        if (is_string($content) || is_scalar($content) || $content instanceof \Stringable) {
+            return (string) $content;
+        }
+
+        $encoded = json_encode($content);
+        if ($encoded === false) {
+            throw new \InvalidArgumentException('Message content must be scalar, stringable, or JSON-serializable.');
+        }
+
+        return $encoded;
     }
 
     /**
@@ -101,7 +119,7 @@ class Message implements \JsonSerializable, \Stringable
             'role' => $this->role->value,
         ];
 
-        if (! empty($this->content)) {
+        if (isset($this->content)) {
             $result['content'] = $this->content;
         }
 
