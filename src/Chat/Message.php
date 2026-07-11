@@ -92,23 +92,25 @@ class Message implements \JsonSerializable, \Stringable
         return $message;
     }
 
-    public static function normalizeContent(mixed $content): string
-    {
-        if ($content === null) {
-            return '';
-        }
-
-        if (is_string($content) || is_scalar($content) || $content instanceof \Stringable) {
-            return (string) $content;
-        }
-
-        $encoded = json_encode($content);
-        if ($encoded === false) {
-            throw new \InvalidArgumentException('Message content must be scalar, stringable, or JSON-serializable.');
-        }
-
-        return $encoded;
+public static function normalizeContent(mixed $content): string
+{
+    if ($content === null) {
+        return '';
     }
+
+    if (is_string($content) || $content instanceof \Stringable) {
+        return (string) $content;
+    }
+
+    try {
+        return json_encode($content, JSON_THROW_ON_ERROR);
+    } catch (\JsonException $e) {
+        throw new \InvalidArgumentException(
+            'Message content must be scalar, stringable, or JSON-serializable.',
+            previous: $e
+        );
+    }
+}
 
     /**
      * @return array<string, mixed>
