@@ -113,14 +113,6 @@ it('normalizes empty tool input to object for Anthropic', function () {
     expect(\json_encode(AnthropicMessage::fromAssistantAnswer($assistantAnswer), JSON_PRETTY_PRINT))->toBe($expectedJson);
 });
 
-it('serializes an empty tool_use input as an object for Anthropic', function () {
-    $message = AnthropicMessage::fromAssistantAnswer([
-        ['type' => 'tool_use', 'id' => 'toolu_x', 'name' => 'list_products', 'input' => []],
-    ]);
-
-    expect($message->contentsArray[0]['input'])->toBeInstanceOf(\stdClass::class);
-});
-
 it('generates a correct vison message for Anthropic', function () {
 
     $expectedJson = <<<'JSON'
