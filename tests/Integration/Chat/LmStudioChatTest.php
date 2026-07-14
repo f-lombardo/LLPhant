@@ -110,3 +110,29 @@ it('can use the result of a function', function () {
 
     expect(strtoupper($answer))->toContain('NO');
 });
+
+it('can call a function with no arguments', function () {
+    $chat = lmstudioChat();
+
+    $itemListObject = new class
+    {
+        public function getItemList(): array
+        {
+            return ['Barolo riserva 2015', 'Brunello di Montalcino 2020'];
+        }
+    };
+
+    $function = new FunctionInfo(
+        'getItemList',
+        $itemListObject,
+        'Get a list of items from my warehouse',
+        []
+    );
+
+    $chat->addFunction($function);
+    $chat->setSystemMessage('You are an AI that can get a list of items from my warehouse using an external system.');
+    $answer = $chat->generateText('What is the oldest wine I have in my warehouse?');
+
+    expect($answer)->toContain('Barolo riserva')
+        ->and($answer)->toContain('2015');
+});
