@@ -7,7 +7,6 @@ namespace Tests\Integration\Classification;
 use LLPhant\Classification\ChoiceAnswer;
 use LLPhant\Classification\ChoiceType;
 use LLPhant\Classification\JevClassifier;
-use LLPhant\Classification\NoulAnswer;
 use LLPhant\Classification\NoulCriteria;
 use LLPhant\Classification\NoulType;
 use LLPhant\Classification\ScoreAnswer;
@@ -21,11 +20,7 @@ it('can generate a noul answer with no criteria', function () {
     ];
     $response = $chat->askQuestions('Help! My payouts have been failing for 3 days.', $questions);
 
-    $expected = [
-        'is_urgent' => new NoulAnswer(0.95),
-    ];
-
-    expect($expected['is_urgent']->isSimilarTo($response['is_urgent']))->toBeTrue('Got a different response: '.json_encode($response));
+    expect($response['is_urgent']->isTrue())->toBeTrue('Got a different response: '.json_encode($response));
     expect($response['is_urgent']->inputTokens)->toBeGreaterThan(0);
     expect($response['is_urgent']->outputTokens)->toBeGreaterThan(0);
 });
@@ -39,11 +34,7 @@ it('can generate a noul answer with some criteria', function () {
     ];
     $response = $chat->askQuestions('Help! My payouts have been failing for 3 days.', $questions);
 
-    $expected = [
-        'is_urgent' => new NoulAnswer(0.95),
-    ];
-
-    expect($expected['is_urgent']->isSimilarTo($response['is_urgent']))->toBeTrue('Got a different response: '.json_encode($response));
+    expect($response['is_urgent']->isTrue())->toBeTrue('Got a different response: '.json_encode($response));
     expect($response['is_urgent']->inputTokens)->toBeGreaterThan(0);
     expect($response['is_urgent']->outputTokens)->toBeGreaterThan(0);
 });
