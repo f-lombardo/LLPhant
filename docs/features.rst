@@ -108,6 +108,7 @@ Supported Vector Stores
    * - ElasticSearch
    * - Local File System
    * - MariaDB (via Doctrine)
+   * - Meilisearch
    * - Memory
    * - Milvus
    * - MongoDB
